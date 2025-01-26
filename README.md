@@ -1,1 +1,1 @@
-# Neuropsiachiatric_fluctuations_prediction
+# Neuropsychiatric_fluctuations_prediction
