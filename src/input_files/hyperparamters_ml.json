@@ -1,0 +1,25 @@
+{
+  "RandomForestClassifier": {
+    "n_estimators": [100, 200, 500],
+    "max_features": ["sqrt", "log2",1.0],
+    "max_depth": [4,6,7,8],
+    "criterion": ["gini", "entropy"]
+  },
+  "SVC": {
+    "C": [0.001, 0.01, 0.1, 1, 10, 50,100],
+    "gamma": ["auto","scale",0.1, 1, 10],
+    "degree": [1, 2, 3, 4, 5],
+    "kernel": ["linear", "poly", "rbf"]
+  },
+  "MultinomialNB": {
+    "alpha": [0.1, 0.01, 0.1]
+  },
+  "GaussianNB": {
+    "var_smoothing": [1e-10, 1e-9, 1e-8,1e-5]
+  },
+  "LogisticRegression": {
+    "solver": ["newton-cg", "lbfgs", "liblinear"],
+    "C": [0.001, 0.01, 0.1, 0.5, 1, 10, 100, 120],
+    "penalty": ["l1","l2"]
+  }
+}
