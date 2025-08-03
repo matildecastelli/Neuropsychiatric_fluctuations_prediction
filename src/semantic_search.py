@@ -37,7 +37,7 @@ def top_k_retrival_nfs(df: pd.DataFrame, model_name: str, n: int, embeddings: Te
     predictions = []
     #frequencies_on = np.zeros(20)
     #frequencies_off = np.zeros(20)
-    top_k = min(n, len(embeddings-1))
+    top_k = min(n, embeddings.shape[0]-1)
     for i,query in enumerate(embeddings):
         top_5_labels = []
         labels_sum = 0
@@ -63,18 +63,22 @@ def top_k_retrival_nfs(df: pd.DataFrame, model_name: str, n: int, embeddings: Te
     return predictions
 
 def top_k_retrieval_patients(df: pd.DataFrame, n: int ,embeddings: Tensor, task: str) -> list:
+    df["id"] = df["ID"].apply(lambda x: str(x).split('_')[0])
     if task == 'classification':
         label = 'State'
     else:
         label ='NFS_score'
 
     predictions = []
-    top_k = min(n+1, len(embeddings-1))
+    top_k = min(n, embeddings.shape[0]-1)
     for i,query in enumerate(embeddings):
+        current_patient_id = df.iloc[i]['id']
+        speaker_indexes = df[df['id'] == current_patient_id].index.tolist()
         cosine_similarities = []
         top_5_labels = []
         #cosine-similarity and torch.topk to find the highest k scores
         cos_scores = util.cos_sim(query, embeddings)[0]
+        cos_scores[speaker_indexes] = -float('inf') # Exclude the query itself and all speaker samples
         top_results = torch.topk(cos_scores, k=top_k)
 
         print("\n\n======================\n\n")
@@ -88,20 +92,20 @@ def top_k_retrieval_patients(df: pd.DataFrame, n: int ,embeddings: Tensor, task:
             top_5_labels.append(df.iloc[j][label])
             cosine_similarities.append(score.cpu().numpy())
 
-        print(top_5_labels[1:])
+        print(top_5_labels)
 
         if task == 'classification':
-            counter = Counter(top_5_labels[1:])
+            counter = Counter(top_5_labels)
             prediction,_ = counter.most_common(1)[0] # most frequent label in the top-k texts
             print(f"predicted label {prediction}")
             predictions.append(prediction)
 
         else:
             # final predictions based on the weighted average (weight==cosine similarity)of the top k texts
-            sum_cosine =  sum(cosine_similarities[1:]) # Remove the first similar in the list (cos_sim==1), i.e. the query
-            labels_avg = sum(p*s for p, s in zip (top_5_labels[1:],cosine_similarities[1:])) / sum_cosine
+            sum_cosine =  sum(cosine_similarities) # Remove the first similar in the list (cos_sim==1), i.e. the query
+            labels_avg = sum(p*s for p, s in zip (top_5_labels,cosine_similarities)) / sum_cosine
             print(f"Predicted label: {labels_avg}")
-            predictions.append(int(labels_avg))
+            predictions.append((labels_avg)) 
 
     if task == 'classification':
         print(classification_report(df['State'],predictions, digits=3))
@@ -115,10 +119,9 @@ def top_k_retrieval_patients(df: pd.DataFrame, n: int ,embeddings: Tensor, task:
         std_absolute_errors = absolute_errors.std()
         quartiles = absolute_errors.quantile([0.25, 0.5, 0.75])
         print(f"MAE {mean_absolute_error(df['NFS_score'], predictions)}, {std_absolute_errors}")
-        print(f"Median,1-3 Quartile of Absolute Errors: {quartiles[0.50]:.4f},{quartiles[0.25]:.4f}-{quartiles[0.75]:.4f}")
+        print(f"Median,1-3 Quartile of Absolute Errors: {quartiles.loc[0.50]:.4f},{quartiles.loc[0.25]:.4f}-{quartiles.loc[0.75]:.4f}")
 
     return predictions
-
 
 def main():
     data_path, output_folder, model_name, corpus, n, task = parse_arguments()
@@ -162,12 +165,12 @@ def parse_arguments():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('--transcriptions_path',
-                        default='../data/Levodopa_NFS_en.csv',
+                        default='../data/Levodopa_NFS_en_medication_removed.csv',
                         type=Path,
                         help='Path of the csv file containing the transcriptions.')
 
     parser.add_argument('--output_path',
-                        default='./output',
+                        default='../output',
                         type=Path,
                         help='Path of the folder containing output files')
 
