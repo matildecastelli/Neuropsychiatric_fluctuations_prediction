@@ -1,25 +1,25 @@
 {
   "RandomForestClassifier": {
-    "n_estimators": [100, 200, 500],
-    "max_features": ["sqrt", "log2",1.0],
-    "max_depth": [4,6,7,8],
-    "criterion": ["gini", "entropy"]
+    "model__n_estimators": [100, 200, 500],
+    "model__max_features": ["sqrt", "log2",1.0],
+    "model__max_depth": [4,6,7,8],
+    "model__criterion": ["gini", "entropy"]
   },
   "SVC": {
-    "C": [0.001, 0.01, 0.1, 1, 10, 50,100],
-    "gamma": ["auto","scale",0.1, 1, 10],
-    "degree": [1, 2, 3, 4, 5],
-    "kernel": ["linear", "poly", "rbf"]
+    "model__C": [0.001, 0.01, 0.1, 1, 10, 50,100],
+    "model__gamma": ["auto","scale",0.1, 1, 10],
+    "model__degree": [1, 2, 3, 4, 5],
+    "model__kernel": ["linear", "poly", "rbf"]
   },
   "MultinomialNB": {
-    "alpha": [0.1, 0.01, 0.1]
+    "model__alpha": [0.1, 0.01, 0.001]
   },
   "GaussianNB": {
-    "var_smoothing": [1e-10, 1e-9, 1e-8,1e-5]
+    "model__var_smoothing": [1e-10, 1e-9, 1e-8,1e-5]
   },
   "LogisticRegression": {
-    "solver": ["newton-cg", "lbfgs", "liblinear"],
-    "C": [0.001, 0.01, 0.1, 0.5, 1, 10, 100, 120],
-    "penalty": ["l1","l2"]
+    "model__solver": ["newton-cg", "lbfgs", "liblinear"],
+    "model__C": [0.001, 0.01, 0.1, 0.5, 1, 10, 100, 120],
+    "model__penalty": ["l1","l2"]
   }
 }
