@@ -17,7 +17,7 @@ import json
 # GLOBAL VARIABLES
 # --------------------------------------------------------------------------- #
 
-hf_token = "hf_YHShshUsygojahHSDdsfvdUHShjaHkjDFsB"   # Insert the access token here
+hf_token = ""   # Insert the access token here
 RANDOM_STATE = 0
 PCA_COMPONENTS = 40 #variance > 90 
 PCA_VARIANCE_THRESHOLD = 0.90

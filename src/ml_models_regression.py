@@ -9,7 +9,7 @@ import argparse
 RANDOM_STATE = 0
 HYPERPARAMETERS_PATH = './input_files/hyperparamters_ml_regression.json'
 pca_type = 'PCA'
-hf_token = "hf_YHShshUsygojahHSDdsfvdUHShjaHkjDFsB" 
+
 
 def main():
     args = parse_arguments()
