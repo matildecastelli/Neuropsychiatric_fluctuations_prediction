@@ -71,7 +71,7 @@ def parse_arguments():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('--transcriptions_path',
-                        default='../data/Levodopa_NFS_summary_en_medication_removed.csv',
+                        default='../data/Levodopa_NFS_en_medication_removed.csv',
                         type=Path,
                         help='Path of the csv file containing the transcriptions.')
 
